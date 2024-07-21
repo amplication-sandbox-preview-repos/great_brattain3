@@ -1,0 +1,28 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model UserActivity {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  user      String?
+  action    String?
+  timestamp DateTime?
+  eventLogs EventLog[]
+}
+
+model EventLog {
+  id             String        @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  eventType      String?
+  timestamp      DateTime?
+  userActivity   UserActivity? @relation(fields: [userActivityId], references: [id])
+  userActivityId String?       @db.ObjectId
+}
